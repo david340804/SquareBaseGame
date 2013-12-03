@@ -6,10 +6,13 @@ OuyaSDK.IMenuAppearingListener,
 OuyaSDK.IPauseListener,
 OuyaSDK.IResumeListener
 {
-	public float INNER_DEADZONE = 0.1f;
+	public float innerDeadzone;	//avoid jitters around center
 	
-	public float MOVE_SPEED = 5f;
-	
+	public float moveSpeed;	//how far to go per second
+
+	public Material mainMaterial;		//main appearance
+	public Material secondaryMaterial;	//switchable second appearance
+
 	public OuyaSDK.OuyaPlayer Index;
 	
 	void Awake()
@@ -47,22 +50,32 @@ OuyaSDK.IResumeListener
 	
 	void Update()
 	{
+		//moving with L stick
 		Vector3 pos = transform.position;
 		
 		Vector2 input;
 		input.x = OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_X, OuyaExampleCommon.Player);
 		input.y = OuyaExampleCommon.GetAxis(OuyaSDK.KeyEnum.AXIS_LSTICK_Y, OuyaExampleCommon.Player);
 		
-		if (Mathf.Abs(input.x) > INNER_DEADZONE)
+		if (Mathf.Abs(input.x) > innerDeadzone)
 		{
-			pos.x += input.x*MOVE_SPEED*Time.deltaTime;
+			pos.x += input.x*moveSpeed*Time.deltaTime;
 		}
 		
-		if (Mathf.Abs(input.y) > INNER_DEADZONE)
+		if (Mathf.Abs(input.y) > innerDeadzone)
 		{
-			pos.y -= input.y*MOVE_SPEED*Time.deltaTime;
+			pos.y -= input.y*moveSpeed*Time.deltaTime;
 		}
 		
 		transform.position = pos;
+
+		//buttons
+		if (OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_O, OuyaSDK.OuyaPlayer.player1)){
+			renderer.material = mainMaterial;
+		}
+
+		if (OuyaExampleCommon.GetButton(OuyaSDK.KeyEnum.BUTTON_A, OuyaSDK.OuyaPlayer.player1)){
+			renderer.material = secondaryMaterial;
+		}
 	}
 }
